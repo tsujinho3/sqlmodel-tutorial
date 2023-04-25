@@ -1,6 +1,4 @@
-from typing import LiteralString
-
-from sqlmodel import Field, Session, SQLModel, create_engine
+from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 
 class Hero(SQLModel, table=True):
@@ -11,7 +9,7 @@ class Hero(SQLModel, table=True):
 
 
 sqlite_file_name = "database.db"
-sqlite_url: LiteralString = f"sqlite:///{sqlite_file_name}"
+sqlite_url = f"sqlite:///{sqlite_file_name}"
 
 engine = create_engine(sqlite_url, echo=True)
 
@@ -30,46 +28,19 @@ def create_heroes() -> None:
         session.add(hero_2)
         session.add(hero_3)
 
-        print("After adding to the session")
-        print("Hero 1:", hero_1)
-        print("Hero 2:", hero_2)
-        print("Hero 3:", hero_3)
-
         session.commit()
 
-        print("After committing the session")
-        print("Hero 1:", hero_1)
-        print("Hero 2:", hero_2)
-        print("Hero 3:", hero_3)
 
-        print("After committing the session, show IDs")
-        print("Hero 1 ID:", hero_1.id)
-        print("Hero 2 ID:", hero_2.id)
-        print("Hero 3 ID:", hero_3.id)
-
-        print("After committing the session, show names")
-        print("Hero 1 name:", hero_1.name)
-        print("Hero 2 name:", hero_2.name)
-        print("Hero 3 name:", hero_3.name)
-
-        session.refresh(hero_1)
-        session.refresh(hero_2)
-        session.refresh(hero_3)
-
-        print("After refreshing the heroes")
-        print("Hero 1:", hero_1)
-        print("Hero 2:", hero_2)
-        print("Hero 3:", hero_3)
-
-    print("After the session closes")
-    print("Hero 1:", hero_1)
-    print("Hero 2:", hero_2)
-    print("Hero 3:", hero_3)
+def select_heroes() -> None:
+    with Session(engine) as session:
+        heroes = session.exec(select(Hero)).all()
+        print(heroes)
 
 
 def main() -> None:
-    create_db_and_tables()
-    create_heroes()
+    # create_db_and_tables()
+    # create_heroes()
+    select_heroes()
 
 
 if __name__ == "__main__":
