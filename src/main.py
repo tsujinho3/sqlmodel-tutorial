@@ -5,9 +5,9 @@ from sqlmodel import Field, Session, SQLModel, col, create_engine, select
 
 class Hero(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
+    name: str = Field(index=True)
     secret_name: str
-    age: Optional[int] = None
+    age: Optional[int] = Field(default=None, index=True)
 
 
 sqlite_file_name = "database.db"
@@ -51,8 +51,8 @@ def select_heroes() -> None:
 
 def main() -> None:
     create_db_and_tables()
-    create_heroes()
-    select_heroes()
+    # create_heroes()
+    # select_heroes()
 
 
 if __name__ == "__main__":
