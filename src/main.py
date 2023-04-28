@@ -1,6 +1,7 @@
+from pprint import pprint as print
 from typing import Optional
 
-from sqlmodel import Field, Session, SQLModel, create_engine
+from sqlmodel import Field, Session, SQLModel, col, create_engine, select
 
 
 class Hero(SQLModel, table=True):
@@ -43,8 +44,10 @@ def create_heroes() -> None:
 
 def select_heroes() -> None:
     with Session(engine) as session:
-        hero = session.get(Hero, 1)
-        print("Hero:", hero)
+        statement = select(Hero).where(col(Hero.age) > 32).limit(3)
+        results = session.exec(statement)
+        heroes = results.all()
+        print(heroes)
 
 
 def main() -> None:
