@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlmodel import Field, Session, SQLModel, col, create_engine, select
+from sqlmodel import Field, Session, SQLModel, create_engine
 
 
 class Hero(SQLModel, table=True):
@@ -43,16 +43,14 @@ def create_heroes() -> None:
 
 def select_heroes() -> None:
     with Session(engine) as session:
-        statement = select(Hero).where(col(Hero.age) >= 35)
-        results = session.exec(statement)
-        for hero in results:
-            print(hero)
+        hero = session.get(Hero, 1)
+        print("Hero:", hero)
 
 
 def main() -> None:
     create_db_and_tables()
-    # create_heroes()
-    # select_heroes()
+    create_heroes()
+    select_heroes()
 
 
 if __name__ == "__main__":
