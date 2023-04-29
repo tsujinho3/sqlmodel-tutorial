@@ -33,18 +33,12 @@ def create_heroes() -> None:
     with Session(engine) as session:
         team_preventers = Team(name="Preventers", headquarters="Sharp Tower")
         team_z_force = Team(name="Z-Force", headquarters="Sister Margaret’s Bar")
-        session.add(team_preventers)
-        session.add(team_z_force)
-        session.commit()
 
         hero_deadpond = Hero(
-            name="Deadpond", secret_name="Dive Wilson", team_id=team_z_force.id
+            name="Deadpond", secret_name="Dive Wilson", team=team_z_force
         )
         hero_rusty_man = Hero(
-            name="Rusty-Man",
-            secret_name="Tommy Sharp",
-            age=48,
-            team_id=team_preventers.id,
+            name="Rusty-Man", secret_name="Tommy Sharp", age=48, team=team_preventers
         )
         hero_spider_boy = Hero(name="Spider-Boy", secret_name="Pedro Parqueador")
         session.add(hero_deadpond)
@@ -60,31 +54,46 @@ def create_heroes() -> None:
         print("Created hero:", hero_rusty_man)
         print("Created hero:", hero_spider_boy)
 
-        hero_spider_boy.team_id = team_preventers.id
+        hero_spider_boy.team = team_preventers
         session.add(hero_spider_boy)
         session.commit()
         session.refresh(hero_spider_boy)
         print("Updated hero:", hero_spider_boy)
 
-        hero_spider_boy.team_id = None
-        session.add(hero_spider_boy)
+        hero_black_lion = Hero(name="Black Lion", secret_name="Trevor Challa", age=35)
+        hero_sure_e = Hero(name="Princess Sure-E", secret_name="Sure-E")
+        team_wakaland = Team(
+            name="Wakaland",
+            headquarters="Wakaland Capital City",
+            heroes=[hero_black_lion, hero_sure_e],
+        )
+        session.add(team_wakaland)
         session.commit()
-        session.refresh(hero_spider_boy)
-        print("No longer Preventer:", hero_spider_boy)
+        session.refresh(team_wakaland)
+        print("Team Wakaland:", team_wakaland)
 
+        hero_tarantula = Hero(name="Tarantula", secret_name="Natalia Roman-on", age=32)
+        hero_dr_weird = Hero(name="Dr. Weird", secret_name="Steve Weird", age=36)
+        hero_cap = Hero(
+            name="Captain North America", secret_name="Esteban Rogelios", age=93
+        )
 
-def select_heroes() -> None:
-    with Session(engine) as session:
-        statement = select(Hero, Team).join(Team, isouter=True)
-        results = session.exec(statement)
-        for hero, team in results:
-            print("Hero:", hero, "Team:", team)
+        team_preventers.heroes.append(hero_tarantula)
+        team_preventers.heroes.append(hero_dr_weird)
+        team_preventers.heroes.append(hero_cap)
+        session.add(team_preventers)
+        session.commit()
+        session.refresh(hero_tarantula)
+        session.refresh(hero_dr_weird)
+        session.refresh(hero_cap)
+        print("Preventers new hero:", hero_tarantula)
+        print("Preventers new hero:", hero_dr_weird)
+        print("Preventers new hero:", hero_cap)
 
 
 def main() -> None:
     create_db_and_tables()
     create_heroes()
-    select_heroes()
 
 
 if __name__ == "__main__":
