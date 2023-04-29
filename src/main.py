@@ -1,4 +1,4 @@
-from sqlmodel import Field, Session, SQLModel, create_engine
+from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 
 class Team(SQLModel, table=True):
@@ -58,9 +58,18 @@ def create_heroes() -> None:
         print("Created hero:", hero_spider_boy)
 
 
+def select_heroes() -> None:
+    with Session(engine) as session:
+        statement = select(Hero, Team).join(Team, isouter=True)
+        results = session.exec(statement)
+        for hero, team in results:
+            print("Hero:", hero, "Team:", team)
+
+
 def main() -> None:
     create_db_and_tables()
     create_heroes()
+    select_heroes()
 
 
 if __name__ == "__main__":
