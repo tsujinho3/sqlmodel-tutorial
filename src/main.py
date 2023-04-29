@@ -110,10 +110,25 @@ def select_heroes() -> None:
         print("Preventers heroes:", team_preventers.heroes)
 
 
+def update_heroes() -> None:
+    with Session(engine) as session:
+        statement = select(Hero).where(Hero.name == "Spider-Boy")
+        result = session.exec(statement)
+        hero_spider_boy = result.one()
+
+        hero_spider_boy.team = None
+        session.add(hero_spider_boy)
+        session.commit()
+
+        session.refresh(hero_spider_boy)
+        print("Spider-Boy without team:", hero_spider_boy)
+
+
 def main() -> None:
     create_db_and_tables()
     create_heroes()
     select_heroes()
+    update_heroes()
 
 
 if __name__ == "__main__":
