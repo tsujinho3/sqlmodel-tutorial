@@ -57,6 +57,12 @@ def create_heroes() -> None:
         print("Created hero:", hero_rusty_man)
         print("Created hero:", hero_spider_boy)
 
+        hero_spider_boy.team_id = team_preventers.id
+        session.add(hero_spider_boy)
+        session.commit()
+        session.refresh(hero_spider_boy)
+        print("Updated hero:", hero_spider_boy)
+
 
 def select_heroes() -> None:
     with Session(engine) as session:
