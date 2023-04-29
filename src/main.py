@@ -91,9 +91,29 @@ def create_heroes() -> None:
         print("Preventers new hero:", hero_cap)
 
 
+def select_heroes() -> None:
+    with Session(engine) as session:
+        # statement1 = select(Hero).where(Hero.name == "Spider-Boy")
+        # result1 = session.exec(statement1)
+        # hero_spider_boy = result1.one()
+
+        # statement2 = select(Team).where(Team.id == hero_spider_boy.team_id)
+        # result2 = session.exec(statement2)
+        # team = result2.first()
+        # print("Spider-Boy's team:", team)
+        # print("Spider-Boy's team again:", hero_spider_boy.team)
+
+        statement3 = select(Team).where(Team.name == "Preventers")
+        result3 = session.exec(statement3)
+        team_preventers = result3.one()
+
+        print("Preventers heroes:", team_preventers.heroes)
+
+
 def main() -> None:
     create_db_and_tables()
     create_heroes()
+    select_heroes()
 
 
 if __name__ == "__main__":
