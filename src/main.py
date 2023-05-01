@@ -28,7 +28,7 @@ def on_startup() -> None:
     create_db_and_tables()
 
 
-@app.post("/heroes/")
+@app.post("/heroes/", response_model=Hero)
 def create_hero(hero: Hero) -> Hero:
     with Session(engine) as session:
         session.add(hero)
@@ -37,7 +37,7 @@ def create_hero(hero: Hero) -> Hero:
         return hero
 
 
-@app.get("/heroes/")
+@app.get("/heroes/", response_model=list[Hero])
 def read_heroes() -> list[Hero]:
     with Session(engine) as session:
         heroes = session.exec(select(Hero)).all()
